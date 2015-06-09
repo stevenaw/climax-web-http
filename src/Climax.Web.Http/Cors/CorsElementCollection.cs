@@ -16,7 +16,7 @@ namespace Climax.Web.Http.Cors
             return ((CorsElement)element).Name;
         }
 
-        internal void Add(CorsElement element)
+        public void Add(CorsElement element)
         {
             BaseAdd(element);
         }

@@ -13,7 +13,7 @@ namespace Climax.Web.Http.Cors
     {
         private readonly CorsPolicy _policy;
 
-        internal ConfigurableCorsPolicyAttribute(string name, CorsSection corsSection)
+        public ConfigurableCorsPolicyAttribute(string name, CorsSection corsSection)
         {
             _policy = new CorsPolicy();
 
