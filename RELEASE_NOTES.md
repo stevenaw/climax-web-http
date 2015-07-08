@@ -1,6 +1,3 @@
-### 1.3.0
-* Updated `Newtonsoft.Json` package version to `7.0.1`
-
 ### 1.2.0
 * Added robust CORS configuration helpers
 
