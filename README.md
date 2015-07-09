@@ -154,7 +154,7 @@ build.cmd
 
   You don't have to do anything else - as long as Web API dependency injection is wired up globally (which it should - for constructor injection), this will just work.
 
- - `Versioning` - support versioning based on attribute routing - using URI versioning, header versioning or content type versioning
+### `Versioning` - support versioning based on attribute routing - using URI versioning, header versioning or content type versioning
 
   You can set up two versions of same resource:
 
