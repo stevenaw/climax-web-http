@@ -64,6 +64,9 @@
     <Compile Include="Binders\SimpleArrayModelBinder.cs" />
     <Compile Include="Binders\SimpleArrayModelBinderProvider.cs" />
     <Compile Include="Binders\StringArrayModelBinder.cs" />
+    <Compile Include="Configuration\IpAddressElement.cs" />
+    <Compile Include="Configuration\IpAddressElementCollection.cs" />
+    <Compile Include="Configuration\IpFilteringSection.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Constraints\EnumConstraint.cs" />
     <Compile Include="Constraints\StringCollectionConstraint.cs" />
@@ -79,6 +82,8 @@
     <Compile Include="Filters\CheckModelStateAttribute.cs" />
     <Compile Include="Filters\ModelNullCheckType.cs" />
     <Compile Include="Handlers\HeadMessageHandler.cs" />
+    <Compile Include="Filters\IpFilterAttribute.cs" />
+    <Compile Include="Handlers\IpFilterHandler.cs" />
     <Compile Include="Handlers\ThreadCultureMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Results\FileHttpActionResult.cs" />
