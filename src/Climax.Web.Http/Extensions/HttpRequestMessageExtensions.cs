@@ -120,25 +120,23 @@ namespace Climax.Web.Http.Extensions
 
         public static bool IsIpAllowed(this HttpRequestMessage request)
         {
-            var ipAddress = request.GetClientIpAddress();
-            var xForwardedFor = request.GetXForwardedFor();
-
             if (!request.IsLocal())
             {
+                var ipAddress = request.GetClientIpAddress();
+
                 var ipFiltering = ConfigurationManager.GetSection("ipFiltering") as IpFilteringSection;
-                if (ipFiltering != null)
+                if (ipFiltering != null && ipFiltering.IpAddresses != null && ipFiltering.IpAddresses.Count > 0)
                 {
-                    if (ipFiltering.IpAddresses.Cast<IpAddressElement>().Any(ip =>
-                        (ipAddress == ip.Address && !ip.Denied) ||
-                        (xForwardedFor.Contains(ip.Address) && !ip.Denied)))
+                    if (ipFiltering.IpAddresses.Cast<IpAddressElement>().Any(ip => (ipAddress == ip.Address && !ip.Denied)))
                     {
                         return true;
                     }
 
+                    return false;
                 }
             }
 
-            return false;
+            return true;
         }
     }
 }
