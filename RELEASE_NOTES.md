@@ -1,3 +1,6 @@
+### 1.3.0
+* Added IP filtering support - as `HttpRequestMessage` extension methods, as an authorization filter (`IpFilterAttribute`) and as a message handler (`IpFilterHandler`). Configured in the `web.config`/`app.config`.
+
 ### 1.2.0
 * Added robust CORS configuration helpers
 

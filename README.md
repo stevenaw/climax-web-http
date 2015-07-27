@@ -218,6 +218,45 @@ build.cmd
   config.ConfigureVersioning(new MyVersionParser());
   ```
 
+### IP filtering
+
+  Allows you to whitelist/black list your entire application using IP configuration settings from your `web.config` or `app.config` file. Available as a message handler (`IpFilterHandler`), an authorization filter (`IpFilterAttribute`) and a request extension on `HttpRequestMessage`.
+  
+  ```csharp
+  //handler
+  config.MessageHandlers.Add(new IpFilterHandler());
+  
+  //filter
+  [IpFilter]
+  public HttpResponseMessage Get()
+  {
+    //omitted for brevity
+  }
+  
+  //extension
+  public HttpResponseMessage Get()
+  {
+    if (Request.IsIpAllowed()) 
+    {
+      //do stuff
+    }
+  }
+  ```
+  
+  Configuration is done via `app.config`/`web.config`:
+  
+  ```xml
+  <configSections>
+    <section name="ipFiltering" type="Climax.Web.Http.Configuration.IpFilteringSection, Climax.Web.Http" />
+  </configSections>
+  <ipFiltering>
+    <ipAddresses>
+      <add address="192.168.0.196" /> <!-- this IP is explicitly allowed -->
+      <add address="192.168.0.197" denied="true" /> <!-- this IP is explicitly denied -->
+    </ipAddresses>
+  </ipFiltering>
+  ```
+
 ### Action Results
 
  - `FileHttpActionResult` - return a file as `StreamContent`
