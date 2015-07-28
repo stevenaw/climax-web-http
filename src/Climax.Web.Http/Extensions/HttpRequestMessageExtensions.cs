@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using Climax.Web.Http.Configuration;
 
 namespace Climax.Web.Http.Extensions
 {
@@ -88,6 +91,52 @@ namespace Climax.Web.Http.Extensions
             }
 
             return default(T);
+        }
+
+        public static string GetHeader(this HttpRequestMessage request, string key)
+        {
+            IEnumerable<string> keys = null;
+            if (!request.Headers.TryGetValues(key, out keys))
+                return null;
+
+            return keys.First();
+        }
+
+        public static string[] GetXForwardedFor(this HttpRequestMessage request)
+        {
+            var xForwardedFor = request.GetHeader("X-Forwarded-For");
+            if (xForwardedFor == null) return new string[0];
+
+            var addresses = xForwardedFor.Split(',');
+
+            return addresses.Select(x =>
+            {
+                if (x.Contains(':'))
+                    return x.Split(':')[0];
+
+                return x;
+            }).ToArray();
+        }
+
+        public static bool IsIpAllowed(this HttpRequestMessage request)
+        {
+            if (!request.IsLocal())
+            {
+                var ipAddress = request.GetClientIpAddress();
+
+                var ipFiltering = ConfigurationManager.GetSection("ipFiltering") as IpFilteringSection;
+                if (ipFiltering != null && ipFiltering.IpAddresses != null && ipFiltering.IpAddresses.Count > 0)
+                {
+                    if (ipFiltering.IpAddresses.Cast<IpAddressElement>().Any(ip => (ipAddress == ip.Address && !ip.Denied)))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
