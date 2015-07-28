@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cors\ConfigurableCorsPolicyAttributeTests.cs" />
+    <Compile Include="HttpRequestMessageExtensionsTests.cs" />
     <Compile Include="SimpleArrayModelBinderProviderTests.cs" />
     <Compile Include="SimpleArrayModelBinderTests.cs" />
     <Compile Include="StringCollectionConstraintTests.cs" />
@@ -85,6 +86,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
