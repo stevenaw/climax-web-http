@@ -1,3 +1,7 @@
+### 1.3.1
+* Mark `request.IsLocal()` extension method as obsolete, in favor of the native Web API `request.GetRequestContext().IsLocal` flag.
+* Ensure IP filtering works well with OWIN hosting.
+
 ### 1.3.0
 * Added IP filtering support - as `HttpRequestMessage` extension methods, as an authorization filter (`IpFilterAttribute`) and as a message handler (`IpFilterHandler`). Configured in the `web.config`/`app.config`.
 
