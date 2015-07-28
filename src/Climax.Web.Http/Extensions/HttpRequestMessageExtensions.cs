@@ -14,6 +14,7 @@ namespace Climax.Web.Http.Extensions
         private const string RemoteEndpointMessage = "System.ServiceModel.Channels.RemoteEndpointMessageProperty";
         private const string OwinContext = "MS_OwinContext";
 
+        [Obsolete("This does not work with OWIN. Additionally, the funcionality is built into Web API 2 - please use request.GetRequestContext().IsLocal property.")]
         public static bool IsLocal(this HttpRequestMessage request)
         {
             var localFlag = request.Properties["MS_IsLocal"] as Lazy<bool>;
@@ -120,7 +121,7 @@ namespace Climax.Web.Http.Extensions
 
         public static bool IsIpAllowed(this HttpRequestMessage request)
         {
-            if (!request.IsLocal())
+            if (!request.GetRequestContext().IsLocal)
             {
                 var ipAddress = request.GetClientIpAddress();
 
