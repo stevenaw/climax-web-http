@@ -69,5 +69,31 @@ namespace Climax.Web.Http.Tests.Cors
             policy.Origins.ShouldContain("http://foo.com");
             policy.Origins.ShouldContain("http://www.abc.com");
         }
+
+        [Test]
+        public void Ctor_TrimsUnnecessaryWhitespaceAroundOrigins()
+        {
+            var elements = new CorsElementCollection();
+            var fooElement = new CorsElement
+            {
+                Name = "foo",
+                Headers = "*",
+                Methods = "*",
+                Origins = "\r\n     http://foo.com;\r\n     http://www.abc.com"
+            };
+            elements.Add(fooElement);
+
+            var corsSection = new CorsSection
+            {
+                CorsPolicies = elements
+            };
+
+            var attr = new ConfigurableCorsPolicyAttribute("foo", corsSection);
+            var policy = attr.GetCorsPolicyAsync(new HttpRequestMessage(), default(CancellationToken)).Result;
+            
+            policy.Origins.Count.ShouldEqual(2);
+            policy.Origins[0].ShouldEqual("http://foo.com");
+            policy.Origins[1].ShouldEqual("http://www.abc.com");
+        }
     }
 }

@@ -1,3 +1,6 @@
+### 1.3.2
+* Fixed a CORS bug - ensure each origin is trimmed after splitting the string entry from config file.
+
 ### 1.3.1
 * Mark `request.IsLocal()` extension method as obsolete, in favor of the native Web API `request.GetRequestContext().IsLocal` flag.
 * Ensure IP filtering works well with OWIN hosting.
