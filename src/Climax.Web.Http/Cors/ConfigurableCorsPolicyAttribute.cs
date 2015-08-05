@@ -28,7 +28,7 @@ namespace Climax.Web.Http.Cors
                     }
                     else
                     {
-                        policy.Headers.Split(';').ToList().ForEach(x => _policy.Headers.Add(x));
+                        policy.Headers.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(x => _policy.Headers.Add(x.Trim()));
                     }
 
                     if (policy.Methods == "*")
@@ -37,7 +37,7 @@ namespace Climax.Web.Http.Cors
                     }
                     else
                     {
-                        policy.Methods.Split(';').ToList().ForEach(x => _policy.Methods.Add(x));
+                        policy.Methods.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(x => _policy.Methods.Add(x.Trim()));
                     }
 
                     if (policy.Origins == "*")
@@ -46,7 +46,7 @@ namespace Climax.Web.Http.Cors
                     }
                     else
                     {
-                        policy.Origins.Split(';').ToList().ForEach(x => _policy.Origins.Add(x));
+                        policy.Origins.Split(new [] {";"}, StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(x => _policy.Origins.Add(x.Trim()));
                     }
                 }
             }
