@@ -95,5 +95,57 @@ namespace Climax.Web.Http.Tests.Cors
             policy.Origins[0].ShouldEqual("http://foo.com");
             policy.Origins[1].ShouldEqual("http://www.abc.com");
         }
+
+        [Test]
+        public void Ctor_TrimsUnnecessaryWhitespaceAroundMethods()
+        {
+            var elements = new CorsElementCollection();
+            var fooElement = new CorsElement
+            {
+                Name = "foo",
+                Headers = "*",
+                Methods = "\r\n    GET;\r\n    POST",
+                Origins = "*"
+            };
+            elements.Add(fooElement);
+
+            var corsSection = new CorsSection
+            {
+                CorsPolicies = elements
+            };
+
+            var attr = new ConfigurableCorsPolicyAttribute("foo", corsSection);
+            var policy = attr.GetCorsPolicyAsync(new HttpRequestMessage(), default(CancellationToken)).Result;
+
+            policy.Methods.Count.ShouldEqual(2);
+            policy.Methods[0].ShouldEqual("GET");
+            policy.Methods[1].ShouldEqual("POST");
+        }
+
+        [Test]
+        public void Ctor_TrimsUnnecessaryWhitespaceAroundHeaders()
+        {
+            var elements = new CorsElementCollection();
+            var fooElement = new CorsElement
+            {
+                Name = "foo",
+                Headers = "\r\n    X-Api-Rate;\r\n    Foo",
+                Methods = "*",
+                Origins = "*"
+            };
+            elements.Add(fooElement);
+
+            var corsSection = new CorsSection
+            {
+                CorsPolicies = elements
+            };
+
+            var attr = new ConfigurableCorsPolicyAttribute("foo", corsSection);
+            var policy = attr.GetCorsPolicyAsync(new HttpRequestMessage(), default(CancellationToken)).Result;
+
+            policy.Headers.Count.ShouldEqual(2);
+            policy.Headers[0].ShouldEqual("X-Api-Rate");
+            policy.Headers[1].ShouldEqual("Foo");
+        }
     }
 }
