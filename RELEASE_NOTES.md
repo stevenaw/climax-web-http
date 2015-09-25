@@ -1,3 +1,6 @@
+### 1.4.0
+* Added support for exposed headers in `ConfigurableCorsPolicyAttribute`
+
 ### 1.3.2
 * Fixed a CORS bug - ensure each origin is trimmed after splitting the string entry from config file.
 
