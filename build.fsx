@@ -64,7 +64,8 @@ Target "NuGet" (fun _ ->
             OutputPath = outputDir
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey"
-            Dependencies = [ "Microsoft.AspNet.WebApi.Core", "Microsoft.AspNet.WebApi.Cors", webApiVersion ]
+            Dependencies = [ "Microsoft.AspNet.WebApi.Core", webApiVersion
+                             "Microsoft.AspNet.WebApi.Cors", webApiVersion ]
             Files = [ (@"bin\Climax.Web.Http.dll", Some "lib/net45", None)
                       (@"bin\Climax.Web.Http.pdb", Some "lib/net45", None) ] })
         ("Climax.Web.Http.nuspec")
