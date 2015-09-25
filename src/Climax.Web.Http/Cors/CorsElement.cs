@@ -33,5 +33,12 @@ namespace Climax.Web.Http.Cors
             get { return (string)this["headers"]; }
             set { this["headers"] = value; }
         }
+
+        [ConfigurationProperty("exposedheaders", IsRequired = false)]
+        public string ExposedHeaders
+        {
+            get { return (string)this["exposedheaders"]; }
+            set { this["exposedheaders"] = value; }
+        }
     }
 }
