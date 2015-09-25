@@ -44,7 +44,8 @@ namespace Climax.Web.Http.Tests.Cors
                 Name = "foo",
                 Headers = "X-Api-Rate;Foo",
                 Methods = "GET;POST;PUT",
-                Origins = "http://foo.com;http://www.abc.com"
+                Origins = "http://foo.com;http://www.abc.com",
+                ExposedHeaders = "X-Response-Header;Bar"
             };
             elements.Add(fooElement);
 
@@ -68,6 +69,9 @@ namespace Climax.Web.Http.Tests.Cors
             policy.AllowAnyOrigin.ShouldEqual(false);
             policy.Origins.ShouldContain("http://foo.com");
             policy.Origins.ShouldContain("http://www.abc.com");
+
+            policy.ExposedHeaders.ShouldContain("X-Response-Header");
+            policy.ExposedHeaders.ShouldContain("Bar");
         }
 
         [Test]
@@ -146,6 +150,33 @@ namespace Climax.Web.Http.Tests.Cors
             policy.Headers.Count.ShouldEqual(2);
             policy.Headers[0].ShouldEqual("X-Api-Rate");
             policy.Headers[1].ShouldEqual("Foo");
+        }
+
+        [Test]
+        public void Ctor_TrimsUnnecessaryWhitespaceAroundEsposedHeaders()
+        {
+            var elements = new CorsElementCollection();
+            var fooElement = new CorsElement
+            {
+                Name = "foo",
+                Headers = "*",
+                Methods = "*",
+                Origins = "*",
+                ExposedHeaders = "\r\n    X-Api-Rate;\r\n    Foo"
+            };
+            elements.Add(fooElement);
+
+            var corsSection = new CorsSection
+            {
+                CorsPolicies = elements
+            };
+
+            var attr = new ConfigurableCorsPolicyAttribute("foo", corsSection);
+            var policy = attr.GetCorsPolicyAsync(new HttpRequestMessage(), default(CancellationToken)).Result;
+
+            policy.ExposedHeaders.Count.ShouldEqual(2);
+            policy.ExposedHeaders[0].ShouldEqual("X-Api-Rate");
+            policy.ExposedHeaders[1].ShouldEqual("Foo");
         }
     }
 }

@@ -48,6 +48,11 @@ namespace Climax.Web.Http.Cors
                     {
                         policy.Origins.Split(new [] {";"}, StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(x => _policy.Origins.Add(x.Trim()));
                     }
+
+                    if (policy.ExposedHeaders != null)
+                    {
+                        policy.ExposedHeaders.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(x => _policy.ExposedHeaders.Add(x.Trim()));
+                    }
                 }
             }
         }
