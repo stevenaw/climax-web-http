@@ -75,6 +75,10 @@
     <Compile Include="Cors\CorsElementCollection.cs" />
     <Compile Include="Cors\CorsSection.cs" />
     <Compile Include="DispositionType.cs" />
+    <Compile Include="Error\ContentNegotiatedExceptionHandler.cs" />
+    <Compile Include="Error\ErrorData.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Extensions\ExceptionExtensions.cs" />
     <Compile Include="Extensions\HttpConfigurationExtensions.cs" />
     <Compile Include="Extensions\HttpRequestMessageExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

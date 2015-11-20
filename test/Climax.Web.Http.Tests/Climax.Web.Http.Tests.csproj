@@ -72,6 +72,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cors\ConfigurableCorsPolicyAttributeTests.cs" />
+    <Compile Include="Extensions\DictionaryExtensionsTests.cs" />
+    <Compile Include="Extensions\ExceptionExtensionsTests.cs" />
+    <Compile Include="Extensions\HttpRequestMessageExtensionsTests.cs" />
     <Compile Include="HttpRequestMessageExtensionsTests.cs" />
     <Compile Include="SimpleArrayModelBinderProviderTests.cs" />
     <Compile Include="SimpleArrayModelBinderTests.cs" />

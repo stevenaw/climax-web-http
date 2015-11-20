@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Web.Http.Hosting;
 using Climax.Web.Http.Configuration;
 
 namespace Climax.Web.Http.Extensions
@@ -19,6 +19,27 @@ namespace Climax.Web.Http.Extensions
         {
             var localFlag = request.Properties["MS_IsLocal"] as Lazy<bool>;
             return localFlag != null && localFlag.Value;
+        }
+
+        public static Guid GetSafeCorrelationId(this HttpRequestMessage request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException("request");
+            }
+
+            Guid correlationId;
+            if (!request.Properties.TryGetValue<Guid>(HttpPropertyKeys.RequestCorrelationKey, out correlationId))
+            {
+                if (correlationId == Guid.Empty)
+                {
+                    correlationId = Guid.NewGuid();
+                }
+
+                request.Properties.Add(HttpPropertyKeys.RequestCorrelationKey, correlationId);
+            }
+
+            return correlationId;
         }
 
         public static string GetClientIpAddress(this HttpRequestMessage request)
