@@ -1,3 +1,9 @@
+### 1.5.0
+* Added `DictionaryExtensions.TryGetValue` to allow for strongly-typed value retrieval from a IDictionary<string,object>
+* Added `ExceptionExtensions.Flatten` to collapse nested exceptions into a single IEnumerable<Exception>
+* Added `HttpRequestMessageExtensions.GetSafeCorrelationId` to uniquely correlate request context such as error information
+* Added `ContentNegotiatedExceptionHandler` and `ErrorData` which can be set as global `IExceptionHandler` to handle error return messages. `ContentNegotiatedExceptionHandler` can be extended to customize ErrorCode or ErrorMessage (example: by exception type)
+
 ### 1.4.0
 * Added support for exposed headers in `ConfigurableCorsPolicyAttribute`
 * Fixed a bug with missing reference to `Microsoft.AspNet.WebApi.Cors` NuGet package
