@@ -4,10 +4,10 @@ using System.Reflection;
 [assembly: AssemblyTitleAttribute("Climax.Web.Http")]
 [assembly: AssemblyProductAttribute("Climax.Web.Http")]
 [assembly: AssemblyDescriptionAttribute("A collection of add-ons for ASP.NET Web API")]
-[assembly: AssemblyVersionAttribute("1.2.0")]
-[assembly: AssemblyFileVersionAttribute("1.2.0")]
+[assembly: AssemblyVersionAttribute("1.5.0")]
+[assembly: AssemblyFileVersionAttribute("1.5.0")]
 namespace System {
     internal static class AssemblyVersionInformation {
-        internal const string Version = "1.2.0";
+        internal const string Version = "1.5.0";
     }
 }

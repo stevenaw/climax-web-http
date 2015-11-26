@@ -86,6 +86,7 @@
     <ProjectReference Include="..\..\src\Climax.Web.Http\Climax.Web.Http.csproj">
       <Project>{7ed19d2d-fd99-48a2-82a4-538e1c8dbd00}</Project>
       <Name>Climax.Web.Http</Name>
+      <SpecificVersion>False</SpecificVersion>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
