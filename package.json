@@ -1,0 +1,21 @@
+{
+  "name": "climax-web-http",
+  "version": "1.0.0",
+  "description": "A collection of add-ons for ASP.NET Web API",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Climax Media",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-msbuild": "^0.3.3",
+    "grunt-nuget": "git://github.com/climax-media/grunt-nuget",
+    "grunt-nunit-runner": "^2.0.4",
+    "grunt-replace": "^0.9.1"
+  }
+}
