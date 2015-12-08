@@ -22,42 +22,82 @@ module.exports = function (grunt) {
       utilities.onError = grunt.fail.fatal;
       releaseInfo = utilities.parseReleaseNotes();
 
-  function getNuspec() {
-    var contents = '';
+  // Convert a simple JSON object of key/value pairs to a self-closing XML element
+  function jsonToClosedXML(elementName, object) {
+    var result, propertyName;
 
-    contents += '<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">';
-      contents += '<metadata>'
-        contents += '<id>' + solutionName + '</id>';
-        contents += '<version>' + releaseInfo.version + '</version>';
-        contents += '<authors>filipw, climax-media</authors>';
-        contents += '<owners>filipw, climax-media</owners>';
-        contents += '<summary>A collection of add-ons for ASP.NET Web API</summary>';
-        contents += '<licenseUrl>https://github.com/climax-media/climax-web-http/blob/master/LICENSE.txt</licenseUrl>';
-        contents += '<projectUrl>https://github.com/climax-media/climax-web-http</projectUrl>';
-        contents += '<iconUrl>https://avatars1.githubusercontent.com/u/4292694</iconUrl>';
-        contents += '<requireLicenseAcceptance>false</requireLicenseAcceptance>';
-        contents += '<description>A collection of add-ons for ASP.NET Web API</description>';
-        contents += '<releaseNotes>' + releaseInfo.changelog.join('\r\n') + '</releaseNotes>';
-        contents += '<copyright>Copyright 2015 Climax Media Inc</copyright>';
-        contents += '<tags>webapi climax aspnet aspnetwebapi</tags>';
+    result = '<' + elementName + ' ';
 
-        contents += '<dependencies>';
-          contents += '<group>';
-            contents += '<dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3" />';
-            contents += '<dependency id="Microsoft.AspNet.WebApi.Cors" version="5.2.3" />';
-          contents += '</group>';
-        contents += '</dependencies>';
+    for(propertyName in object) {
+      result += propertyName + '="' + object[propertyName] + '" ';
+    }
 
-      contents += '</metadata>';
+    return result + '/>';
+  }
+
+  function getNuspecAsync(templateFile, onComplete) {
+    var values = {
+      id: solutionName,
+      version: releaseInfo.version,
+      authors: 'filipw, climax-media',
+      summary: 'A collection of add-ons for ASP.NET Web API',
+      releaseNotes: releaseInfo.changelog.join('\r\n'),
+      tags: 'webapi climax aspnet aspnetwebapi',
+      dependencies: [
+        { id: 'Microsoft.AspNet.WebApi.Core', version: '5.2.3' },
+        { id: 'Microsoft.AspNet.WebApi.Cors', version: '5.2.3' }
+      ],
+      files: [
+        { src: 'Climax.Web.Http.dll', target: 'lib\\net45' },
+        { src: 'Climax.Web.Http.pdb', target: 'lib\\net45' }
+      ]
+    };
+
+    fs.readFile(templateFile, function read(err, content) {
+      var dependencyString = '',
+        fileString = '',
+        i,
+        len;
+
+      if (err) {
+        onComplete(err);
+      }
+
+      // File will be read with whatever encoding is appropriate, and the raw buffer will be converted to string here
+      content = content + '';
+
+      content = content.replace('<id>@project@</id>', '<id>' + values.id + '</id>');
+      content = content.replace('<version>@build.number@</version>', '<version>' + values.version + '</version>');
+      content = content.replace('<authors>@authors@</authors>', '<authors>' + values.authors + '</authors>');
+      content = content.replace('<owners>@authors@</owners>', '<owners>' + values.authors + '</owners>');
+      content = content.replace('<summary>@summary@</summary>', '<summary>' + values.summary + '</summary>');
+      content = content.replace('<description>@description@</description>', '<description>' + values.summary + '</description>');
+      content = content.replace('<releaseNotes>@releaseNotes@</releaseNotes>', '<releaseNotes>' + values.releaseNotes + '</releaseNotes>');
+      content = content.replace('<tags>@tags@</tags>', '<tags>' + values.tags + '</tags>');
+      content = content.replace('@references@', '');
+
+      for(i=0, len=values.dependencies.length; i < len; i++ ) {
+        dependencyString += jsonToClosedXML('dependency', values.dependencies[i]);
+      }
+
+      if(dependencyString) {
+        dependencyString = '<dependencies><group>' + dependencyString + '</group></dependencies>';
+      }
+
+      for(i=0, len=values.files.length; i < len; i++ ) {
+        fileString += jsonToClosedXML('file', values.files[i]);
+      }
+
+      if(fileString) {
+        fileString = '<files>' + fileString + '</files>';
+      }
 
 
-      contents += '<files>';
-        contents += '<file src="Climax.Web.Http.dll" target="lib\\net45" />';
-        contents += '<file src="Climax.Web.Http.pdb" target="lib\\net45" />';
-      contents += '</files>';
-    contents += '</package>';
+      content = content.replace('@dependencies@', dependencyString);
+      content = content.replace('@files@', fileString);
 
-    return contents;
+      onComplete(undefined, content);
+    });
   }
 
   /**
@@ -82,6 +122,7 @@ module.exports = function (grunt) {
       // Project-specific settings.
       lib: {
         solution: appSolution,
+        nuspecTemplate: solutionName + '.nuspec',
         nuspecFile: 'src/' + solutionName + '/bin/' + buildCOnfiguration + '/' + solutionName + '.nuspec',
         buildConfiguration: buildCOnfiguration,
         buildTargets: grunt.option('lib.buildTargets') || 'Rebuild',
@@ -195,20 +236,32 @@ module.exports = function (grunt) {
   // Make nuspec file
   grunt.registerTask('makenuspec', function() {
     var done,
+        writeNuspec,
         app = grunt.config.get('app');
 
     done = this.async();
 
-    var nuspecContents = getNuspec();
+    writeNuspec = function(fileName, fileContents) {
+      fs.writeFile(fileName, fileContents, function (err) {
+        if (err) {
+          grunt.fail(err);
+        } else {
+          grunt.log.writeln('Nuspec file created at ' + fileName);
+        }
 
-    fs.writeFile(app.lib.nuspecFile, nuspecContents, function (err) {
+        done();
+      });
+    };
+
+    grunt.log.writeln('Reading nuspec template file from ' + app.lib.nuspecTemplate);
+    getNuspecAsync(app.lib.nuspecTemplate, function(err, nuspecContents) {
       if (err) {
         grunt.fail(err);
+        done();
       } else {
-        grunt.log.writeln('Nuspec file created at ' + app.lib.nuspecFile);
+        grunt.log.writeln('Nuspec template file read and parsed. Writing nuspec to ' + app.lib.nuspecFile);
+        writeNuspec(app.lib.nuspecFile, nuspecContents);
       }
-
-      done();
     });
   });
 
