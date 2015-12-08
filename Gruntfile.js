@@ -107,7 +107,6 @@ module.exports = function (grunt) {
 
     app: {
       versions: utilities.prepareVersions(releaseInfo.version, buildCounter),
-      changelog: releaseInfo.changelog.join('\r\n'),
       branch: branch,
       buildCounter: buildCounter,
 
